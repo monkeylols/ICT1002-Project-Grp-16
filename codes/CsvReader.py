@@ -3,6 +3,7 @@ from Tkinter import Tk
 from tkFileDialog import askopenfilename
 
 import FeedbackInfo
+import os
 
 
 class CsvReader:
@@ -45,11 +46,16 @@ if len(feedbackinfo_list) > 0:
     # example of getting specific info from each row
     print getattr(feedbackinfo_list[1], 'report_date_time')
 
-# function 2
+
+#temporary variables
 a=1
+cName = "FMC/Walter Liong"
+
+# function 2
 for i in range(len(feedbackinfo_list)):
-    if feedbackinfo_list[i].company == "FMC/Walter Liong":
-        f = open("%d.txt"%a,"w+")
+    if feedbackinfo_list[i].company == cName:
+        os.makedirs(cName)
+        f = open(os.path.join(cName) + "/%d.txt"%a,"w+")
         f.write(feedbackinfo_list[i].write_content())
         f.close
         a +=1
