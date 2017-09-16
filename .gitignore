@@ -2,6 +2,7 @@
 *.txt
 codes/FeedbackInfo.pyc
 .idea/workspace.xml
+<<<<<<< HEAD
 .idea/misc.xml
 .idea/modules.xml
 .idea/ICT1002-Project-Grp-16.iml
@@ -9,3 +10,13 @@ codes/FeedbackInfo.pyc
 .idea/workspace.xml
 .idea/workspace.xml
 *.xml
+=======
+.idea/ICT1002-Project-Grp-16.iml
+.idea/modules.xml
+.idea/misc.xml
+.idea/workspace.xml
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/vcs.xml
+>>>>>>> 8c2a6c247b992fbe872569056028c8805dd2d975
