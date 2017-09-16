@@ -47,6 +47,8 @@ if len(feedbackinfo_list) > 0:
     print getattr(feedbackinfo_list[1], 'report_date_time')
 
 
+
+'''#Jun Hui
 #temporary variables
 a=1
 cName = "FMC/Walter Liong"
@@ -54,8 +56,9 @@ cName = "FMC/Walter Liong"
 # function 2
 for i in range(len(feedbackinfo_list)):
     if feedbackinfo_list[i].company == cName:
-        os.makedirs(cName)
+        if not os.path.exists(cName):
+            os.makedirs(cName)
         f = open(os.path.join(cName) + "/%d.txt"%a,"w+")
         f.write(feedbackinfo_list[i].write_content())
         f.close
-        a +=1
+        a +=1'''
