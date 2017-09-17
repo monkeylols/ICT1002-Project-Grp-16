@@ -37,6 +37,7 @@ class CsvReader:
             return feedbackinfo_list
 
 
+'''#Adrian
 # getting only the first row of the data (for example only)
 reader = CsvReader()
 feedbackinfo_list = reader.read_file()
@@ -45,7 +46,7 @@ if len(feedbackinfo_list) > 0:
 
     # example of getting specific info from each row
     print getattr(feedbackinfo_list[1], 'report_date_time')
-
+'''
 
 
 '''#Jun Hui
