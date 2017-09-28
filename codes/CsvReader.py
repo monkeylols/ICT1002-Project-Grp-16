@@ -16,7 +16,7 @@ def read_file():
             reader = csv.DictReader(csvfile)
 
             for row in reader:
-                feedbackinfo = FeedbackInfo(row['Reported on'], row['Co. Name'], row['Ext. Requestor'],
+                feedbackinfo = FeedbackInfo.FeedbackInfo(row['Reported on'], row['Co. Name'], row['Ext. Requestor'],
                                                          row['Property Name'], row['Category'],
                                                          row['Order Group Description'],
                                                          row['Floor/unit or space'], row['Breakdown?\n(Yes/No)'],
@@ -29,8 +29,9 @@ def read_file():
 
                 feedbackinfo_list.append(feedbackinfo)
         return feedbackinfo_list
-    except:
+    except ValueError:
         print 'Invalid file'
+        print ValueError
         return feedbackinfo_list
 
 
