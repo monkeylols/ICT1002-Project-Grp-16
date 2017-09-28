@@ -4,7 +4,7 @@ from tkFileDialog import askopenfilename
 import FeedbackInfo
 
 
-def read_file(self):
+def read_file():
     # Open up a file selector window to let the user select the csv file
     Tk().withdraw()
     filename = askopenfilename()
