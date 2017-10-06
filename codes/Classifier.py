@@ -1,35 +1,8 @@
-import CsvReader
+from codes import CsvReader
+import matplotlib.pyplot as plot
 
 
-# def set_training_data(feedbackinfo_list):
-#     train_data = []
-#     for i in range(len(feedbackinfo_list)):
-#         tokens = nltk.word_tokenize(feedbackinfo_list[i].description)
-#         tagged = nltk.pos_tag(tokens)
-#         data = [dict(tagged), feedbackinfo_list[i].category]
-#         train_data.append(data)
-#     return train_data
-#
-#
-# def set_test_data(feedbackinfo_list):
-#     test_data = []
-#     for i in range(len(feedbackinfo_list)):
-#         tokens = nltk.word_tokenize(feedbackinfo_list[i].description)
-#         tagged = nltk.pos_tag(tokens)
-#         data = [dict(tagged)]
-#         test_data += data
-#
-#     return test_data
-#
-#
-# def nb_classify(trian_data, test_data):
-#     classifier = nltk.classify.NaiveBayesClassifier.train(trian_data)
-#
-#     print sorted(classifier.labels())
-#     classified_data = classifier.classify_many(test_data)
-#     for data in classified_data:
-#         print data
-
+# Prepare the training data
 def set_training_data(feedbackinfo_list):
     train_data = []
     for feedbackinfo in feedbackinfo_list:
@@ -43,6 +16,7 @@ def set_training_data(feedbackinfo_list):
     return train_data
 
 
+# Get the probabilities of the type of order group for the categories
 def get_prob(data):
 
     # Get the categories count for each company (e.g. [company: [feedback = 5] [complain = 2]])
@@ -99,23 +73,41 @@ def get_prob(data):
             for cl in company_and_cat[cat]:
                 if cl[0] == c:
                     for c_list in counter[c]:
-                        c_list[1] = float(c_list[1]) / cl[1]
+                        c_list[1] = (float(c_list[1]) / cl[1]) * 100
 
         prob[cat] = [counter]
     return prob
 
 
-def get_com_feedback_prob(prob, cname, cat):
-    prob_list = prob[cname]
-    for pl in prob_list:
-        return pl[cat]
+# Returns a pie chart
+def get_com_feedback_prob(feedbackinfo_list, cname, cat):
 
+    # Get the required data
+    train_data = set_training_data(feedbackinfo_list)
+
+    # Get the probabilities from the set data
+    prob = get_prob(train_data)
+
+    prob_list = prob[cname]
+    labels = []
+    sizes = []
+    for pl in prob_list:
+        for items in pl[cat]:
+
+            labels.append(items[0])
+            sizes.append(round(items[1], 1))
+
+    pie = plot.pie(sizes, shadow=True, autopct='%1.1f%%', pctdistance=1.2)
+    plot.legend(pie[0], labels, loc="upper left")
+    plot.axis('equal')
+    return plot
 
 
 feedbackinfo_list = CsvReader.read_file()
-train_data = set_training_data(feedbackinfo_list)
-prob = get_prob(train_data)
-print get_com_feedback_prob(prob, 'CUSHMAN & WAKEFIELD (S) PTE LTD', 'Feedback')
+
+# Example of running the function
+plt = get_com_feedback_prob(feedbackinfo_list, 'CUSHMAN & WAKEFIELD (S) PTE LTD', 'Feedback')
+plt.show()
 
 
 
