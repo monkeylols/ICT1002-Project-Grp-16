@@ -43,6 +43,7 @@ class CsvReader:
 
 ################## function 7 -Identify the frequency of each request from each category###############################
 # Ivan
+
 class CategoryFrequency():
     def get_category_total(datadict, category):
         """Method to return total items of a category regardless of date"""
@@ -57,7 +58,7 @@ class CategoryFrequency():
             total = total + int(cat_dict['ack'][day])
             # print(total)
         return total
-
+    #Method to get acknowledgement/completion request of a specific day
     def get_category_total_by_day_and_querytype(datadict, category, querytype, day):
         print category
         total = 0
@@ -76,6 +77,7 @@ class CategoryFrequency():
         else:
             return datadict[category][querytype][day]
 
+    # Method to get acknowledgement/completion request of a specific month
     def get_category_total_by_month(datadict, category, querytype, month, year):
 
         cat_dic=datadict[category][querytype]
@@ -95,43 +97,7 @@ class CategoryFrequency():
             total = total + cat_dic.get(datestring, 0)
         return total
 
-
-
-    """Plots a frequency graph for up to 4 labelled values"""
-    def plot_graph(title, labels, values):
-        def create_autopct(totalreq):
-            def req_autopct(percent):
-                total = sum(totalreq)
-                percentile = int(round(percent * total / 100.0))
-                return '{p:.2f}%  ({v:d})'.format(p=percent, v=percentile)
-
-            return req_autopct
-        #Validate argument
-
-        explode = (0.1, 0.1, 0.1, 0.1)
-        plot.figure(0,figsize = (9, 9)).add_axes(([0.1, 0.1, 0.8, 0.8]))
-        totalreq = values
-        plot.pie(totalreq, labels=labels, autopct=create_autopct(totalreq), explode=explode, startangle=90)
-        plot.title(title, bbox={'facecolor': '0.8', 'pad': 2})
-        plot.legend(labels, loc="best")
-        chartoPDF = PdfPages('Request_Analysis_by_Category.pdf')
-        plot.figure(0).savefig(chartoPDF, format='pdf')
-        chartoPDF.close()
-
-
-
-    def CreateHisto(data,label,title):
-        plot.figure(1)
-        plot.bar(range(len(data)), data.values())
-        plot.xticks(range(len(data)), data.keys(), rotation=50)
-        plot.legend(label,loc='upper left', shadow=True, ncol=1)
-        plot.tight_layout()
-        plot.title(title, bbox={'facecolor': '0.8', 'pad': 2})
-        plot.show()
-        chartoPDF = PdfPages('Request_Analysis_by_Category.pdf')
-        plot.figure(1).savefig(chartoPDF, format='pdf')
-
-
+    global feedbackinfo_list
     reader = CsvReader()
     feedbackinfo_list = reader.read_file()  # assuming if user wants to use a different file to analyse user request
     numberofrows = 1
@@ -141,15 +107,8 @@ class CategoryFrequency():
     freqofcompliments = float(0)
     freqofOthers = float(0)
 
-    categorylist = []
-    # companylist=[]
-    # ordergrplist=[]
-    # feedbackandcomplaintslist=[]
-    # description=[]
-    # propertylist=[]
-    # requireddata=[]
-    storeddata = []
-
+    #This is a global dictionary to store accumulated data for the frequency and average request analysis
+    global datadict
     datadict = {
         'Feedback': {},
         'Complaints': {},
@@ -164,7 +123,6 @@ class CategoryFrequency():
     }
 
     total_report_time = datetime.datetime.now() - datetime.datetime.now()
-  #  print(total_report_time)
     # Loop thru csv rows
     for row in range(0, len(feedbackinfo_list)):
         # storeddata.append(feedbackinfo_list[row].write_content())  # get the entire csv data
@@ -259,12 +217,12 @@ class CategoryFrequency():
                 dt_list.append(ack_dt)
                 min_dt = min(dt_list)
                 total_report_time = total_report_time + (min_dt - report_dt)
-
+    #set the reporting total time in seconds
     total_time_in_sec = total_report_time.total_seconds()
 
     datadict['average_request_time'] = total_time_in_sec / datadict.get('total')
 
-    avgreqtime = str(datetime.timedelta(seconds=datadict.get('average_request_time')))
+    avgreqtime=str(datetime.timedelta(seconds=datadict.get('average_request_time')))
 
     #print "Result:{}".format(get_category_total_by_month(datadict,category,'comp','05/2017'))
     #print "Result: {}".format(get_category_total_by_day_and_querytype(datadict, "Feedback", 'ack', '03/08/2017'))
@@ -273,17 +231,36 @@ class CategoryFrequency():
     datadict['total_compliments'] = get_category_total(datadict, "Compliment")
     datadict['total_complaints'] = get_category_total(datadict, "Complaints")
     datadict['total_others'] = get_category_total(datadict, "Others/Request for Information")
-
+    print("Total request time taken in seconds: {}, Total: {}".format(total_time_in_sec, datadict.get('total')))
+    print "The average time of receiving request is:{}".format(avgreqtime)
     #print datadict['Feedback']['comp']
 
     #print "The total amount of request in the enquired month is:{}".format(get_category_total_by_month(datadict, "Feedback", "comp", 3, 2017))
+def getFrequency():
+    """Plots a frequency graph for up to 4 labelled values"""
+    def plot_graph(title, labels, values):
+        def create_autopct(totalreq):
+            def req_autopct(percent):
+                total = sum(totalreq)
+                percentile = int(round(percent * total / 100.0))
+                return '{p:.2f}%  ({v:d})'.format(p=percent, v=percentile)
 
+            return req_autopct
+
+        explode = (0.1, 0.1, 0.1, 0.1)
+        plot.figure("Frequency of each different category",figsize = (9, 9)).add_axes(([0.1, 0.1, 0.8, 0.8]))
+        totalreq = values
+        plot.pie(totalreq, labels=labels, autopct=create_autopct(totalreq), explode=explode, startangle=90)
+        plot.title(title, bbox={'facecolor': '0.8', 'pad': 2})
+        plot.legend(labels, loc="best")
+        chartoPDF = PdfPages('Request_Analysis_by_Category.pdf')
+        plot.savefig(chartoPDF, format='pdf')
+        plot.show()
+    # Get Category Feedback Frequency Result
     feedbackcounter = datadict['total_feedback']
     complaincounter = datadict['total_complaints']
     otherreqcounter = datadict['total_others']
     complimentcounter = datadict['total_compliments']
-    print("Total request time taken in seconds: {}, Total: {}".format(total_time_in_sec, datadict.get('total')))
-    print "The average time of receiving request is:{}".format(avgreqtime)
     print "Total number of Request in CSV:{0}".format(datadict['total'])
     print "Total number of feedback request: {0}".format(feedbackcounter)
     print "Total number of complaints:{0}".format(complaincounter)
@@ -302,31 +279,80 @@ class CategoryFrequency():
     print "Frequency Percentage of Feedback:{0:.2f}%".format(FreqofFeedback)
     print "Frequency Percentage of Compliment:{0:.2f}%".format(Freqofcompliments)
     print "Frequency Percentage of Others/Request or Information:{0:.2f}%".format(FreqofOthers)
-    print datadict[category]['comp']
+
+
     labels = ["Complaints", "Feedback", "Compliment", "Others"]
     title = 'Frequency of Each Request from All Categories'
     values = [totalcomplaints, totalfeedback, totalcompliments, totalothers]
+    #Set Pie Chart data and generate pie chart of Frequency for each request
     plot_graph(title=title, values=values, labels=labels)
-    hislab="comp"
-    histit="Average Request Response Time:{}".format(avgreqtime)
-    CreateHisto(datadict[category]['ack'],label=hislab,title=histit)
 
-    # # sizes = [FreqofComplaints, FreqofFeedback, Freqofcompliments, FreqofOthers
-    # explode = (0.1, 0.1, 0.1, 0.1)
-    # # freqfiq, axis = plot.subplots()
-    # plot.figure(figsize=(9, 9)).add_axes(([0.1, 0.1, 0.8, 0.8]))
-    # totalreq = [totalcomplaints, totalfeedback, totalcompliments, totalothers]
-    # plot.pie(totalreq, labels=labels, autopct=create_autopct(totalreq), explode=explode, startangle=90)
-    # # plot.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-    #
-    # plot.title('Frequency of Each Request from Each Category', bbox={'facecolor': '0.8', 'pad': 2})
-    # plot.legend(labels, loc="best")
-    # plot.show()
-    # chartoPDF = PdfPages('Request_Analysis_by_Category.pdf')
-    #
-    # plot.savefig(chartoPDF, format='pdf')
 
-    #chartoPDF.close()
-    # create_histo()
+# Function to call  when generating Histograph of specific request
+# Requires users to select a string called itemselect and status
 
+def GenerateHistograph(itemselect,status):
+    avgreqtime = str(datetime.timedelta(seconds=datadict.get('average_request_time')))
+    #Method to Create Histogram for Data Retrieval
+    def CreateHisto(data,label,title):
+        plot.figure('Request_Analysis_Histogram')
+        plot.bar(range(len(data)), data.values())
+        plot.xticks(range(len(data)), data.keys(), rotation=50)
+        plot.legend(label,loc='upper left', shadow=True, ncol=1)
+        plot.tight_layout()
+        plot.title(title, bbox={'facecolor': '0.8', 'pad': 2})
+        chartoPDF = PdfPages('Date_Request_Analysis_by_Category.pdf')
+        plot.savefig(chartoPDF, format='pdf')
+        plot.show()
+        plot.close()
+
+#1) Validate the itemselected before generating the histogram
+    try:
+        if itemselect=="Feedback":
+            if status == "Completed":
+                hislab="Feedback"
+                histit="Average Request Response Time:{}".format(avgreqtime)
+    # Generate Histogram for all completed request
+                CreateHisto(datadict['Feedback']['comp'],label=hislab,title=histit)
+            elif status == "Acknowledged":
+                hislab = "Feedback"
+                histit = "Average Request Response Time:{}".format(avgreqtime)
+                # Generate Histogram for all acknowledge request
+                CreateHisto(datadict['Feedback']['ack'], label=hislab, title=histit)
+        elif itemselect=="Complaint":
+            if status == "Completed":
+                    hislab="Complaint"
+                    histit="Average Request Response Time:{}".format(avgreqtime)
+                    # Generate Histogram for all completed request
+                    CreateHisto(datadict['Complaints']['comp'],label=hislab,title=histit)
+            elif status == "Acknowledged":
+                    hislab = "Complaints"
+                    histit = "Average Request Response Time:{}".format(avgreqtime)
+                    # Generate Histogram for all acknowledge request
+                    CreateHisto(datadict['Complaints']['ack'], label=hislab, title=histit)
+        elif itemselect=="Compliment":
+            if status=="Completed":
+                    hislab="Compliment"
+                    histit="Average Request Response Time:{}".format(avgreqtime)
+                     # Generate Histogram for all completed request
+                    CreateHisto(datadict['Compliment']['comp'], label=hislab, title=histit)
+            elif status=="Acknowledged":
+                    hislab = "Compliment"
+                    histit = "Average Request Response Time:{}".format(avgreqtime)
+                     # Generate Histogram for all acknowledge request
+                    CreateHisto(datadict['Compliment']['ack'], label=hislab, title=histit)
+        elif itemselect=="Others":
+            if status == "Completed":
+                hislab = "Others"
+                histit = "Average Request Response Time:{}".format(avgreqtime)
+                 # Generate Histogram for all completed request
+                CreateHisto(datadict['Others/Request for Information']['comp'], label=hislab, title=histit)
+            elif status == "Acknowledged":
+                hislab = "Others"
+                histit = "Average Request Response Time:{}".format(avgreqtime)
+                # Generate Histogram for all acknowledge request
+                CreateHisto(datadict['Compliment']['ack'], label=hislab, title=histit)
+
+    except ValueError:
+        print "Invalid input please try again"
 
