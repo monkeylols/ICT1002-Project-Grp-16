@@ -3,8 +3,8 @@ import datetime
 from dateutil import parser
 import re
 
-reader = CsvReader.CsvReader()
-feedbackinfo_list = reader.read_file()
+
+feedbackinfo_list = CsvReader.read_file()
 
 # Counting the request type
 counterDict = {}
@@ -68,8 +68,6 @@ for aKey in counterDict:
     lastDate = datetime.datetime.strptime(counterDict[aKey][0], "%d/%m/%Y")
     firstDate = datetime.datetime.strptime(counterDict[aKey][1], "%d/%m/%Y")
     count = counterDict[aKey][2]
-
-    print count
 
     differenceDay = lastDate - firstDate
     frequency = differenceDay.days/count
