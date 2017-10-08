@@ -1,4 +1,4 @@
-from codes import CsvReader
+import CsvReader
 import matplotlib.pyplot as plot
 
 
