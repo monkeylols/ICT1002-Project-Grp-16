@@ -1,11 +1,11 @@
 import CsvReader
 import csv
 from dateutil import parser
+import tkFileDialog
 
 # Open Function - Allows user to download the csv files
 # Each file contains information of complaints and feedback that have yet to be completed for a particular property
-def get_files_by_property_name(feedbackinfo_list):
-    filepath = 'C:\\Users\\YanTian\\Desktop\\data\\'
+def get_files_by_property_name(feedbackinfo_list, filepath):
     for i in feedbackinfo_list:
         if not is_date(getattr(i, 'completed_date_time')):
             with open(filepath + getattr(i, 'property_name') + '.csv', 'wb') as csvfile:
@@ -30,4 +30,5 @@ def is_date(string):
         return False
 
 feedbackinfo_list = CsvReader.read_file()
-get_files_by_property_name(feedbackinfo_list)
+directory = tkFileDialog.askdirectory() + '/'
+get_files_by_property_name(feedbackinfo_list, directory)
