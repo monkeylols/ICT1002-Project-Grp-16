@@ -31,16 +31,17 @@ def get_feedback(feedbackinfo_list):
             else:
                 complaints[date] = 1
 
-    print "Feedback:"
+    s= "Feedback:\n"
     ordered = OrderedDict(sorted(feedback.items(), key=lambda t: t[0]))
     for k,v in ordered.items():
-        print "%s: %d" %(k, v)
+        s+= "%s: %d\n" %(k, v)
 
-    print "\nComplaints:"
+    s+= "\nComplaints:\n"
     ordered = OrderedDict(sorted(complaints.items(), key=lambda t: t[0]))
     for k, v in ordered.items():
-        print "%s: %d" % (k, v)
+        s+= "%s: %d\n" % (k, v)
+    return s
 
 
-feedbackinfo_list = CsvReader.read_file()
-get_feedback(feedbackinfo_list)
+#feedbackinfo_list = CsvReader.read_file()
+#get_feedback(feedbackinfo_list)

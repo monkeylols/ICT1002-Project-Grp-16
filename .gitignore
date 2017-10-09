@@ -22,3 +22,4 @@ codes/FeedbackInfo.pyc
 *.xml
 codes/CsvReader.pyc
 .idea/workspace.xml
+codes/Classifier.py
