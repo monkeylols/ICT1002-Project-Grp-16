@@ -1,4 +1,4 @@
-import csv
+import CSVReader
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 import FeedbackInfo
@@ -10,42 +10,22 @@ from dateutil.parser import parse
 import numpy as np
 
 
-class CsvReader:
-    def read_file(self):
-        # Open up a file selector window to let the user select the csv file
-        Tk().withdraw()
-        filename = askopenfilename()
-        feedbackinfo_list = []
 
-        # Reading the csv file and putting the data into a list
-        try:
-            with open(filename) as csvfile:
-                reader = csv.DictReader(csvfile)
-
-                for row in reader:
-                    feedbackinfo = FeedbackInfo.FeedbackInfo(row['Reported on'], row['Co. Name'], row['Ext. Requestor'],
-                                                             row['Property Name'], row['Category'],
-                                                             row['Order Group Description'],
-                                                             row['Floor/unit or space'], row['Breakdown?\n(Yes/No)'],
-                                                             row['Description'],
-                                                             row['Nature of feedback/complants (& Finding)'],
-                                                             row['Action taken'],
-                                                             row['Start date & time'], row['Acknowledged date'],
-                                                             row['Technically completed on'], row['Status'],
-                                                             row['Customer/ FED Internal'])
-
-                    feedbackinfo_list.append(feedbackinfo)
-            return feedbackinfo_list
-        except:
-            print 'Invalid file'
-            return feedbackinfo_list
 
 
 ################## function 7 -Identify the frequency of each request from each category###############################
 # Ivan
+global feedbackinfo_list
+reader = CSVReader
+feedbackinfo_list = reader.read_file()  # assuming if user wants to use a different file to analyse user request
+numberofrows = 1
 
-class CategoryFrequency():
-    def get_category_total(datadict, category):
+freqofFeedback = float(0)
+freqofComplaints = float(0)
+freqofcompliments = float(0)
+freqofOthers = float(0)
+
+def get_category_total(datadict, category):
         """Method to return total items of a category regardless of date"""
         print category
         total = 0
@@ -59,7 +39,7 @@ class CategoryFrequency():
             # print(total)
         return total
     #Method to get acknowledgement/completion request of a specific day
-    def get_category_total_by_day_and_querytype(datadict, category, querytype, day):
+def get_category_total_by_day_and_querytype(datadict, category, querytype, day):
         print category
         total = 0
         if category not in datadict:
@@ -78,7 +58,7 @@ class CategoryFrequency():
             return datadict[category][querytype][day]
 
     # Method to get acknowledgement/completion request of a specific month
-    def get_category_total_by_month(datadict, category, querytype, month, year):
+def get_category_total_by_month(datadict, category, querytype, month, year):
 
         cat_dic=datadict[category][querytype]
         # print int(month)
@@ -97,19 +77,11 @@ class CategoryFrequency():
             total = total + cat_dic.get(datestring, 0)
         return total
 
-    global feedbackinfo_list
-    reader = CsvReader()
-    feedbackinfo_list = reader.read_file()  # assuming if user wants to use a different file to analyse user request
-    numberofrows = 1
 
-    freqofFeedback = float(0)
-    freqofComplaints = float(0)
-    freqofcompliments = float(0)
-    freqofOthers = float(0)
 
-    #This is a global dictionary to store accumulated data for the frequency and average request analysis
-    global datadict
-    datadict = {
+#This is a global dictionary to store accumulated data for the frequency and average request analysis
+global datadict
+datadict = {
         'Feedback': {},
         'Complaints': {},
         'Others/Request for Information': {},
@@ -122,9 +94,9 @@ class CategoryFrequency():
         'average_request_time': 0
     }
 
-    total_report_time = datetime.datetime.now() - datetime.datetime.now()
-    # Loop thru csv rows
-    for row in range(0, len(feedbackinfo_list)):
+total_report_time = datetime.datetime.now() - datetime.datetime.now()
+# Loop thru csv rows
+for row in range(0, len(feedbackinfo_list)):
         # storeddata.append(feedbackinfo_list[row].write_content())  # get the entire csv data
 
         # 1)Obtain category, ack datetime, comp datetime from each row
@@ -218,25 +190,26 @@ class CategoryFrequency():
                 min_dt = min(dt_list)
                 total_report_time = total_report_time + (min_dt - report_dt)
     #set the reporting total time in seconds
-    total_time_in_sec = total_report_time.total_seconds()
+total_time_in_sec = total_report_time.total_seconds()
 
-    datadict['average_request_time'] = total_time_in_sec / datadict.get('total')
+datadict['average_request_time'] = total_time_in_sec / datadict.get('total')
 
-    avgreqtime=str(datetime.timedelta(seconds=datadict.get('average_request_time')))
+avgreqtime=str(datetime.timedelta(seconds=datadict.get('average_request_time')))
 
     #print "Result:{}".format(get_category_total_by_month(datadict,category,'comp','05/2017'))
     #print "Result: {}".format(get_category_total_by_day_and_querytype(datadict, "Feedback", 'ack', '03/08/2017'))
 
-    datadict['total_feedback'] = get_category_total(datadict, 'Feedback')
-    datadict['total_compliments'] = get_category_total(datadict, "Compliment")
-    datadict['total_complaints'] = get_category_total(datadict, "Complaints")
-    datadict['total_others'] = get_category_total(datadict, "Others/Request for Information")
-    print("Total request time taken in seconds: {}, Total: {}".format(total_time_in_sec, datadict.get('total')))
-    print "The average time of receiving request is:{}".format(avgreqtime)
-    #print datadict['Feedback']['comp']
+datadict['total_feedback'] = get_category_total(datadict, 'Feedback')
+datadict['total_compliments'] = get_category_total(datadict, "Compliment")
+datadict['total_complaints'] = get_category_total(datadict, "Complaints")
+datadict['total_others'] = get_category_total(datadict, "Others/Request for Information")
+print("Total request time taken in seconds: {}, Total: {}".format(total_time_in_sec, datadict.get('total')))
+print "The average time of receiving request is:{}".format(avgreqtime)
 
-    #print "The total amount of request in the enquired month is:{}".format(get_category_total_by_month(datadict, "Feedback", "comp", 3, 2017))
+
+#1) Get the frequency of each request and plot pie chart(Note: Function does not require inputs to be executed)
 def getFrequency():
+
     """Plots a frequency graph for up to 4 labelled values"""
     def plot_graph(title, labels, values):
         def create_autopct(totalreq):
@@ -248,6 +221,7 @@ def getFrequency():
             return req_autopct
 
         explode = (0.1, 0.1, 0.1, 0.1)
+
         plot.figure("Frequency of each different category",figsize = (9, 9)).add_axes(([0.1, 0.1, 0.8, 0.8]))
         totalreq = values
         plot.pie(totalreq, labels=labels, autopct=create_autopct(totalreq), explode=explode, startangle=90)
@@ -255,7 +229,11 @@ def getFrequency():
         plot.legend(labels, loc="best")
         chartoPDF = PdfPages('Request_Analysis_by_Category.pdf')
         plot.savefig(chartoPDF, format='pdf')
-        plot.show()
+
+
+        return plot
+
+
     # Get Category Feedback Frequency Result
     feedbackcounter = datadict['total_feedback']
     complaincounter = datadict['total_complaints']
@@ -266,7 +244,8 @@ def getFrequency():
     print "Total number of complaints:{0}".format(complaincounter)
     print "Total number of compliment request: {0}".format(complimentcounter)
     print "Total number of Others/Request or Information:{0}".format(otherreqcounter)
-    totalfeedback = float(feedbackcounter)
+    global totalfeedback,totalcomplaints,totalcompliments,totalothers
+    totalfeedback= float(feedbackcounter)
     totalcomplaints = float(complaincounter)
     totalcompliments = float(complimentcounter)
     totalothers = float(otherreqcounter)
@@ -279,21 +258,19 @@ def getFrequency():
     print "Frequency Percentage of Feedback:{0:.2f}%".format(FreqofFeedback)
     print "Frequency Percentage of Compliment:{0:.2f}%".format(Freqofcompliments)
     print "Frequency Percentage of Others/Request or Information:{0:.2f}%".format(FreqofOthers)
-
-
     labels = ["Complaints", "Feedback", "Compliment", "Others"]
     title = 'Frequency of Each Request from All Categories'
     values = [totalcomplaints, totalfeedback, totalcompliments, totalothers]
+    return plot_graph(title=title,labels=labels,values=values)
+
     #Set Pie Chart data and generate pie chart of Frequency for each request
-    plot_graph(title=title, values=values, labels=labels)
 
 
-# Function to call  when generating Histograph of specific request
-# Requires users to select a string called itemselect and status
-
+# 2)Function to call  when generating Histograph of specific request
+# Requires users to select a string item "Feedback,Complaints,Compliment or Others" and string status "Completed or Acknowledged" in order for histogram to work
 def GenerateHistograph(itemselect,status):
     avgreqtime = str(datetime.timedelta(seconds=datadict.get('average_request_time')))
-    #Method to Create Histogram for Data Retrieval
+    #Method to Create Histogram for Data Retrieval of
     def CreateHisto(data,label,title):
         plot.figure('Request_Analysis_Histogram')
         plot.bar(range(len(data)), data.values())
@@ -303,55 +280,49 @@ def GenerateHistograph(itemselect,status):
         plot.title(title, bbox={'facecolor': '0.8', 'pad': 2})
         chartoPDF = PdfPages('Date_Request_Analysis_by_Category.pdf')
         plot.savefig(chartoPDF, format='pdf')
-        plot.show()
-        plot.close()
-
-#1) Validate the itemselected before generating the histogram
+        return plot
+    #Try catch user selection when running in the
     try:
         if itemselect=="Feedback":
             if status == "Completed":
                 hislab="Feedback"
                 histit="Average Request Response Time:{}".format(avgreqtime)
     # Generate Histogram for all completed request
-                CreateHisto(datadict['Feedback']['comp'],label=hislab,title=histit)
+                return CreateHisto(datadict['Feedback']['comp'],label=hislab,title=histit)
             elif status == "Acknowledged":
                 hislab = "Feedback"
                 histit = "Average Request Response Time:{}".format(avgreqtime)
                 # Generate Histogram for all acknowledge request
-                CreateHisto(datadict['Feedback']['ack'], label=hislab, title=histit)
+                return CreateHisto(datadict['Feedback']['ack'], label=hislab, title=histit)
         elif itemselect=="Complaint":
             if status == "Completed":
                     hislab="Complaint"
                     histit="Average Request Response Time:{}".format(avgreqtime)
-                    # Generate Histogram for all completed request
-                    CreateHisto(datadict['Complaints']['comp'],label=hislab,title=histit)
+    # Generate Histogram for all completed request
+                    return CreateHisto(datadict['Complaints']['comp'],label=hislab,title=histit)
             elif status == "Acknowledged":
                     hislab = "Complaints"
                     histit = "Average Request Response Time:{}".format(avgreqtime)
-                    # Generate Histogram for all acknowledge request
-                    CreateHisto(datadict['Complaints']['ack'], label=hislab, title=histit)
+            # Generate Histogram for all completed request
+                    return  CreateHisto(datadict['Complaints']['ack'], label=hislab, title=histit)
         elif itemselect=="Compliment":
             if status=="Completed":
                     hislab="Compliment"
                     histit="Average Request Response Time:{}".format(avgreqtime)
-                     # Generate Histogram for all completed request
                     CreateHisto(datadict['Compliment']['comp'], label=hislab, title=histit)
             elif status=="Acknowledged":
                     hislab = "Compliment"
                     histit = "Average Request Response Time:{}".format(avgreqtime)
-                     # Generate Histogram for all acknowledge request
-                    CreateHisto(datadict['Compliment']['ack'], label=hislab, title=histit)
+                    return CreateHisto(datadict['Compliment']['ack'], label=hislab, title=histit)
         elif itemselect=="Others":
             if status == "Completed":
                 hislab = "Others"
                 histit = "Average Request Response Time:{}".format(avgreqtime)
-                 # Generate Histogram for all completed request
-                CreateHisto(datadict['Others/Request for Information']['comp'], label=hislab, title=histit)
+                return CreateHisto(datadict['Others/Request for Information']['comp'], label=hislab, title=histit)
             elif status == "Acknowledged":
                 hislab = "Others"
                 histit = "Average Request Response Time:{}".format(avgreqtime)
-                # Generate Histogram for all acknowledge request
-                CreateHisto(datadict['Compliment']['ack'], label=hislab, title=histit)
+                return CreateHisto(datadict['Compliment']['ack'], label=hislab, title=histit)
 
     except ValueError:
         print "Invalid input please try again"
