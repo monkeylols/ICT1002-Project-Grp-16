@@ -44,6 +44,7 @@ def get_prob(data):
     for cat in company_and_cat:
         cat_list = []
         counter = {}
+
         # Get the number of categories order group
         for i in range(len(data)):
             if data[i][0] == cat:
@@ -79,7 +80,7 @@ def get_prob(data):
     return prob
 
 
-# Returns a pie chart
+# The main function that returns a pie chart or an error message
 def get_com_feedback_prob(feedbackinfo_list, cname, cat):
 
     # Get the required data
@@ -88,26 +89,35 @@ def get_com_feedback_prob(feedbackinfo_list, cname, cat):
     # Get the probabilities from the set data
     prob = get_prob(train_data)
 
-    prob_list = prob[cname]
-    labels = []
-    sizes = []
-    for pl in prob_list:
-        for items in pl[cat]:
+    if cname in prob:
+        prob_list = prob[cname]
+        labels = []
+        sizes = []
+        for pl in prob_list:
+            if cat in pl:
+                for items in pl[cat]:
 
-            labels.append(items[0])
-            sizes.append(round(items[1], 1))
+                    labels.append(items[0])
+                    sizes.append(round(items[1], 1))
+            else:
+                return 'Invalid order group selection'
 
-    pie = plot.pie(sizes, shadow=True, autopct='%1.1f%%', pctdistance=1.2)
-    plot.legend(pie[0], labels, loc="upper left")
-    plot.axis('equal')
-    return plot
+        pie = plot.pie(sizes, shadow=True, autopct='%1.1f%%', pctdistance=1.2)
+        plot.legend(pie[0], labels, loc="upper left")
+        plot.axis('equal')
+        return plot
+    else:
+        return 'Invalid company name selection'
 
 
 feedbackinfo_list = CsvReader.read_file()
 
 # Example of running the function
 plt = get_com_feedback_prob(feedbackinfo_list, 'CUSHMAN & WAKEFIELD (S) PTE LTD', 'Feedback')
-plt.show()
+if type(plt) == str:
+    print plt
+else:
+    plt.show()
 
 
 
