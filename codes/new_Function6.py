@@ -83,5 +83,5 @@ for keys in newCountDict.keys():
         reportFrequency = float(frequency)/1.0
         difference = 1
 
-    print "There is about %.3f requests on %s in the span of %d days" % (reportFrequency, keys, difference)
+    print "There is about %.3f requests on %s in the span of per days" % (reportFrequency, keys)
 
