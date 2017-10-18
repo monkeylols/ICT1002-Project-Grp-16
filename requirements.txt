@@ -1,3 +1,4 @@
+wordcloud
 cycler==0.10.0
 dateutils==0.6.6
 functools32==3.2.3.post2

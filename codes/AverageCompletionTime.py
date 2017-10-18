@@ -18,7 +18,7 @@ def average_completion_time():
         return roundedvalue
 
     # Reading CSV & Select the Cols needed
-    df = pd.read_csv('data\Feedback and Complaints_Sample Dataset.csv', usecols=[5,12,13,14])
+    df = pd.read_csv('..\data\Feedback and Complaints_Sample Dataset.csv', usecols=[5,12,13,14])
 
     # Remove any rows with any NaN
     df = df.dropna(axis=0,how='any')
