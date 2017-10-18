@@ -24,6 +24,11 @@ class GUI:
         self.greet_button = Button(self.container, text="OK", command=lambda: self.greet(self))
         self.greet_button.pack()
 
+        self.colnames = ["Reported On", "Co. Name", "Requestor", "Property Name", "Category",
+                           "Order Group Description", "Floor/unit or space", "Breakdown? (Yes/No)", "Description",
+                           "Nature of feedback/complants (& Finding)", "Action Taken", "Start date & time",
+                           "Acknowledged date", "Technically completed on", "Status", "Customer / FED Internal"]
+
 
     def greet(self,button):
         self.feedbackinfo_list = CsvReader.read_file()
@@ -241,9 +246,8 @@ class GUI:
         #creating downnload Button
         printButton = Button(self.funcFrame, text="Download", command=lambda: self.dlframe(self),
                                 width =25)
-
         # creating Merge Button
-        mergeButton = Button(self.funcFrame, text="Merge", command=lambda: self.newentry(), width=25)
+        mergeButton = Button(self.funcFrame, text="Merge", command=lambda: self.newentry(self), width=25)
 
         classifyButton.grid(row=0, column=0, sticky="nw")
         avgComButton.grid(row=1, column=0, sticky="nw")
@@ -252,6 +256,7 @@ class GUI:
         numoffbButton.grid(row=4,column=0, sticky="nw")
         typefreqButton.grid(row=5,column=0, sticky="nw")
         printButton.grid(row=6,column=0, sticky="sw")
+        mergeButton.grid(row=7,column=0, sticky="sw")
 
         self.funcFrame.grid(row=1, column=0, sticky="w")
 
@@ -264,14 +269,11 @@ class GUI:
         self.treeFrame.columnconfigure(0, weight=1)
 
         # calling the columns and giving them an id
-        tree["columns"] = ("Reported On", "Co. Name", "Requestor", "Property Name", "Category",
-                           "Order Group Description", "Floor/unit or space", "Breakdown? (Yes/No)", "Description",
-                           "Nature of feedback/complants (& Finding)", "Action Taken", "Start date & time",
-                           "Acknowledged date", "Technically completed on", "Status", "Customer / FED Internal")
+        tree["columns"] = (self.colnames)
         tree.heading("#0", text="")
         tree.column("#0", minwidth=0, width=0)
         for x in range(1, 16):
-            tree.heading(str(x), text=str(x))
+            tree.heading(str(x), text=self.colnames[x])
             tree.column(str(x), minwidth=0)
 
         counter = 0
@@ -328,8 +330,6 @@ class GUI:
         searchLabel = Label(searchFrame, text="Search : \t")
         searchEntry = Entry(searchFrame, bd=10)
 
-        # creating reqtype Button
-        #reqtypeButton = Button(searchFrame, text="reqType", command=lambda: self.reqtype(self, funcFrame))
 
         # implement to searchframe
         searchLabel.grid(row=0, column=0)

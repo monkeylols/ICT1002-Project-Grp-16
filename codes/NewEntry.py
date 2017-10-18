@@ -6,7 +6,7 @@ def new_entry(feedbackinfo_list):
     new_fbi_list = CsvReader.read_file()
     feedbackinfo_list += new_fbi_list
 
-    with open('../data/' + str(datetime.datetime.now().mircrosecond) + '.csv', 'wb') as myfile:
+    with open('../data/' + str(datetime.datetime.now().microsecond) + '.csv', 'wb') as myfile:
         wr = csv.writer(myfile)
         wr.writerow(
             ['Reported on', 'Co. Name', 'Ext. Requestor', 'Property Name', 'Category', 'Order Group Description',
