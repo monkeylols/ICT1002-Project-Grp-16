@@ -21,5 +21,4 @@ codes/FeedbackInfo.pyc
 >>>>>>> 8c2a6c247b992fbe872569056028c8805dd2d975
 *.xml
 codes/CsvReader.pyc
-.idea/workspace.xml
-codes/Classifier.py
+
