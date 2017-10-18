@@ -82,6 +82,6 @@ def requestfreq(feedbackinfo_list):
             reportFrequency = float(frequency)/1.0
             difference = 1
 
-        s+= "There is about %.2f requests on %s in the span of %d days\n" % (reportFrequency, keys, difference)
+        s+= "There is about %.3f requests on %s in the span of per days\n" % (reportFrequency, keys)
     return s
 
