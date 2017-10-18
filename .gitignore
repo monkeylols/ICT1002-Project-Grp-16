@@ -22,3 +22,5 @@ codes/FeedbackInfo.pyc
 *.xml
 codes/CsvReader.pyc
 
+*.pyc
+*.pyc
