@@ -248,12 +248,15 @@ def GenerateHistograph(itemselect,status,feedbackinfo):
     #Method to Create Histogram for Data Retrieval of
     def CreateHisto(data,label,title):
         plot.figure('Request_Analysis_Histogram')
+        plot.rcParams['xtick.major.pad']='5'
         plot.bar(range(len(data)), data.values())
-        plot.xticks(range(len(data)), data.keys(), rotation=50)
-        plot.legend(label,loc='upper left', shadow=True, ncol=1)
-        plot.tight_layout()
+        plot.xticks(range(len(data)), data.keys(), rotation=50,fontsize=8,ha='right')
+        plot.legend(label,loc='upper left', shadow=True, ncol=1,fontsize=12)
         plot.title(title, bbox={'facecolor': '0.8', 'pad': 2})
+        plot.subplots_adjust(bottom=0.0)
+        plot.tight_layout()
         return plot
+
     #Try catch user selection when running in the
     try:
         if itemselect=="Feedback":
