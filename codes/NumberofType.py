@@ -3,9 +3,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import style
 
-
+# Done by: Lim Yan Tian 1702261
 # Function 4
-
 def get_request_type(feedbackinfo_list):
 
     request_type = {}
