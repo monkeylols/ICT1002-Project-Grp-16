@@ -103,7 +103,7 @@ def get_com_feedback_prob(feedbackinfo_list, cname, cat):
                 return 'Invalid order group selection'
 
         pie = plot.pie(sizes, shadow=True, autopct='%1.1f%%', pctdistance=1.2)
-        plot.legend(pie[0], labels, loc="upper left")
+        plot.legend(pie[0], labels, loc="upper left", prop={'size': 6})
         plot.axis('equal')
         return plot
     else:
