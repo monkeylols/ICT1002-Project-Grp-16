@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plot
 import datetime
-import calendar
 from dateutil.parser import parse
 
 
@@ -27,43 +26,8 @@ def get_category_total(datadict, category):
 
         for day in cat_dict['ack'].keys():
             total = total + int(cat_dict['ack'][day])
-            # print(total)
         return total
     #Method to get acknowledgement/completion request of a specific day
-def get_category_total_by_day_and_querytype(datadict, category, querytype, day):
-        total = 0
-        if category not in datadict:
-            return total
-        if querytype != 'ack' and querytype != 'comp':
-            return total
-
-        cat_dict = datadict[category][querytype]
-
-        if day not in cat_dict:
-            return total
-        else:
-            return datadict[category][querytype][day]
-
-    # Method to get acknowledgement/completion request of a specific month
-def get_category_total_by_month(datadict, category, querytype, month, year):
-
-        cat_dic=datadict[category][querytype]
-        # print int(month)
-        # since 2nd object in returned tuple is the last day of the month
-        days_in_month = calendar.monthrange(year, int(month))[1]
-        # print days_in_month
-        total = 0
-        for day in range (1, int(days_in_month) + 1):
-            datestring = ""
-            if day < 10:
-                day = "0{}".format(day)
-            if month < 10:
-                month = "0{}".format(month)
-
-            datestring = "{day}/{month}/{year}".format(day=day, month=month, year=year)
-            total = total + cat_dic.get(datestring, 0)
-        return total
-
 
 # Loop thru csv rows
 def set_data(feedbackinfo):
@@ -84,8 +48,6 @@ def set_data(feedbackinfo):
     total_report_time = datetime.datetime.now() - datetime.datetime.now()
     feedbackinfo_list = feedbackinfo
     for row in range(0, len(feedbackinfo_list)):
-            # storeddata.append(feedbackinfo_list[row].write_content())  # get the entire csv data
-
             # 1)Obtain category, ack datetime, comp datetime from each row
             category = feedbackinfo_list[row].category
             ack_date = feedbackinfo_list[row].acknowledge_date_time
@@ -100,11 +62,8 @@ def set_data(feedbackinfo):
                 # if not None or not NA
                 # convert datetime to date
                 ack_dt = parse(ack_date)
-                # print ack_dt
-                ack_date = ack_dt.strftime("%d/%m/%Y")
 
-            # print len(ack_date)
-            # print(ack_date=='in progress')
+                ack_date = ack_dt.strftime("%d/%m/%Y")
 
             if len(ack_date) == 0:
                 ack_date = 'blank'
@@ -180,11 +139,6 @@ def set_data(feedbackinfo):
 
     datadict['average_request_time'] = total_time_in_sec / datadict.get('total')
 
-    avgreqtime=str(datetime.timedelta(seconds=datadict.get('average_request_time')))
-
-        #print "Result:{}".format(get_category_total_by_month(datadict,category,'comp','05/2017'))
-        #print "Result: {}".format(get_category_total_by_day_and_querytype(datadict, "Feedback", 'ack', '03/08/2017'))
-
     datadict['total_feedback'] = get_category_total(datadict, 'Feedback')
     datadict['total_compliments'] = get_category_total(datadict, "Compliment")
     datadict['total_complaints'] = get_category_total(datadict, "Complaints")
@@ -227,10 +181,7 @@ def getFrequency(feedbackinfo):
     totalcomplaints = float(complaincounter)
     totalcompliments = float(complimentcounter)
     totalothers = float(otherreqcounter)
-    FreqofComplaints = (totalcomplaints / float(datadict['total'])) * 100
-    Freqofcompliments = (totalcompliments / float(datadict['total'])) * 100
-    FreqofFeedback = (totalfeedback / float(datadict['total'])) * 100
-    FreqofOthers = (totalothers / float(datadict['total'])) * 100
+
 
     labels = ["Complaints", "Feedback", "Compliment", "Others"]
     title = 'Frequency of Each Request from All Categories'
@@ -256,7 +207,6 @@ def GenerateHistograph(itemselect,status,feedbackinfo):
         plot.subplots_adjust(bottom=0.0)
         plot.tight_layout()
         return plot
-
     #Try catch user selection when running in the
     try:
         if itemselect=="Feedback":
