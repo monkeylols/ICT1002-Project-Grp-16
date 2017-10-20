@@ -1,4 +1,4 @@
-# Done by: <Marcus Goh> <1700277>
+# Done by: Marcus Goh 1700277
 
 import pandas as pd
 
