@@ -1,8 +1,5 @@
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-import imp
-
-from os import path
 
 #Convert all the required text into a single string here
 #and store them in word_string
