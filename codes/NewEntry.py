@@ -2,6 +2,7 @@ import CsvReader
 import csv
 import datetime
 
+
 def new_entry(feedbackinfo_list):
     new_fbi_list = CsvReader.read_file()
     feedbackinfo_list += new_fbi_list
