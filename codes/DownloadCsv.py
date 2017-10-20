@@ -2,7 +2,7 @@ import csv
 import datetime
 
 # Open Function - Allows user to download the csv files
-# Each file contains information of complaints and feedback that have yet to be completed for a particular property
+# Each file contains information of complaints and feedback for a particular property
 def get_files_by_property_name(feedbackinfo_list, filepath):
     now = datetime.datetime.now()
     with open(filepath + str(now.microsecond) + '.csv', 'wb') as csvfile:
