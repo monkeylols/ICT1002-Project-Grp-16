@@ -45,7 +45,7 @@ def get_request_type(feedbackinfo_list):
         typefreq.append(v)
         complaintdict = dict(zip(typerequest, typefreq))
         s+= "%s: %d\n" %(k, v)
-
+        # Done by: Marcus Goh 1700277
         def plot_graph():
             # uses default settings
             plt.rcdefaults()
