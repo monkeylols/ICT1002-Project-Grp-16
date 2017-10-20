@@ -1,7 +1,7 @@
-# Done by: Lim Yan Tian 1702261
 import csv
 import datetime
 
+# Done by: Lim Yan Tian 1702261
 # Open Function - Allows user to download the csv files
 # Each file contains information of complaints and feedback for a particular property
 def get_files_by_property_name(feedbackinfo_list, filepath):
@@ -22,6 +22,7 @@ def get_files_by_property_name(feedbackinfo_list, filepath):
 
     return
 
+#Done by: Chua Jun Hui 1700681
 def downloadtxt(feedbackinfo_list, filepath):
     count=1
     for i in feedbackinfo_list:
