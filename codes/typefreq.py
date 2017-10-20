@@ -1,4 +1,4 @@
-import CsvReader
+# Done by: Ho Hong Yue 1701103
 from datetime import datetime
 from dateutil import parser
 
@@ -8,7 +8,6 @@ def tryParsingDate(text):
     return parser.parse(newText).strftime("%d/%m/%Y")
 
 
-#feedbackinfo_list = CsvReader.read_file()
 def requestfreq(feedbackinfo_list):
     countTypeDict = {}  # A dictionary that store {des_type:[desTypeCount, firstReportDate, lastReportDate]}
     for item in range(len(feedbackinfo_list)):  # For loop count the number of desType for each desType in data set
